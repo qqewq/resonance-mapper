@@ -4,22 +4,27 @@ import { Play, Loader2 } from 'lucide-react';
 interface AnalyzeButtonProps {
   isAnalyzing: boolean;
   onClick: () => void;
+  disabled?: boolean;
 }
 
-const AnalyzeButton = ({ isAnalyzing, onClick }: AnalyzeButtonProps) => {
+const AnalyzeButton = ({ isAnalyzing, onClick, disabled = false }: AnalyzeButtonProps) => {
   return (
     <motion.button
       onClick={onClick}
-      disabled={isAnalyzing}
-      className="relative w-full py-4 px-8 rounded-lg font-semibold text-primary-foreground overflow-hidden disabled:cursor-not-allowed"
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
+      disabled={isAnalyzing || disabled}
+      className="relative w-full py-4 px-8 rounded-lg font-semibold text-primary-foreground overflow-hidden disabled:cursor-not-allowed disabled:opacity-50"
+      whileHover={!disabled && !isAnalyzing ? { scale: 1.02 } : {}}
+      whileTap={!disabled && !isAnalyzing ? { scale: 0.98 } : {}}
     >
       {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary to-accent" />
+      <div className={`absolute inset-0 bg-gradient-to-r ${
+        disabled 
+          ? 'from-muted to-muted' 
+          : 'from-primary via-primary to-accent'
+      }`} />
       
       {/* Animated shimmer */}
-      {!isAnalyzing && (
+      {!isAnalyzing && !disabled && (
         <motion.div
           className="absolute inset-0 bg-gradient-to-r from-transparent via-foreground/20 to-transparent"
           initial={{ x: '-100%' }}
@@ -29,7 +34,7 @@ const AnalyzeButton = ({ isAnalyzing, onClick }: AnalyzeButtonProps) => {
       )}
       
       {/* Glow effect */}
-      <div className="absolute inset-0 glow-primary opacity-50" />
+      {!disabled && <div className="absolute inset-0 glow-primary opacity-50" />}
       
       {/* Content */}
       <div className="relative flex items-center justify-center gap-3">
